@@ -1,4 +1,4 @@
-export default {
-  testEnvironment: 'node',
-  transform: {}
+// jest.config.js
+module.exports = {
+  testEnvironment: 'node'
 };
