@@ -1,0 +1,28 @@
+{
+  "name": "cicd-pipeline",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/app.js",
+    "build": "echo \"Build step placeholder\"",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.22.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Virender9/ci-cd-pipeline.git"
+  },
+  "keywords": [
+    "cicd"
+  ],
+  "author": "Virender",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Virender9/ci-cd-pipeline/issues"
+  },
+  "homepage": "https://github.com/Virender9/ci-cd-pipeline#readme",
+  "description": ""
+}
