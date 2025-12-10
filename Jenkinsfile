@@ -30,7 +30,7 @@ pipeline {
             sh 'nohup node src/app.js >/tmp/app.log 2>&1 & sleep 2'
 
             // Run Postman tests using Newman
-            sh 'newman run todo-api-tests.postman_collection.json'
+            sh 'newman run Todo.postman_collection.json'
       }
     }
   }
