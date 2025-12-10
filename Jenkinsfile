@@ -19,7 +19,7 @@ pipeline {
         sh 'npm run build'
       }
     }
-    stage('test') {
+    stage('Test') {
       steps {
         sh 'npm test'
       }
@@ -41,8 +41,8 @@ pipeline {
       }
       stage('Security Test - SonarQube') {
           environment {
-              SONAR_TOKEN = credentials('SONAR_TOKEN')
-            }
+            SONAR_TOKEN = credentials('SONAR_TOKEN')
+          }
           steps {
             sh '''
               docker run --rm \
@@ -50,7 +50,9 @@ pipeline {
                 -e SONAR_TOKEN=$SONAR_TOKEN \
                 -v $(pwd):/usr/src \
                 sonarsource/sonar-scanner-cli \
-                sonar-scanner
+                sonar-scanner \
+                  -Dsonar.projectKey=ci-cd-pipeline \
+                  -Dsonar.sources=/usr/src/src
             '''
           }
         }
