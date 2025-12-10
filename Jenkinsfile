@@ -35,13 +35,24 @@ pipeline {
     }
     stage('Performance Test') {
         steps {
-          // Start app in background
-          sh 'nohup node src/app.js >/tmp/app.log 2>&1 & sleep 2'
-
           // Run K6 performance test
           sh 'k6 run performance-test.js'
         }
       }
+      stage('Security Test - SonarQube') {
+          environment {
+              SONAR_TOKEN = credentials('SONAR_TOKEN')
+            }
+          steps {
+            sh '''
+              sonar-scanner \
+                -Dsonar.projectKey=ci-cd-pipeline \
+                -Dsonar.sources=./src \
+                -Dsonar.host.url=http://3.239.59.204:9000 \
+                -Dsonar.login=$SONAR_TOKEN
+            '''
+          }
+        }
     //Low code
   }
 }
