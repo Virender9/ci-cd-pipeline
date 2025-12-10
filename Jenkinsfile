@@ -24,5 +24,14 @@ pipeline {
         sh 'npm test'
       }
     }
+    stage("Integration Test"){
+      steps{
+        // Start the API server in background
+            sh 'nohup node src/app.js >/tmp/app.log 2>&1 & sleep 2'
+
+            // Run Postman tests using Newman
+            sh 'newman run todo-api-tests.postman_collection.json'
+      }
+    }
   }
 }
