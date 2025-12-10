@@ -33,5 +33,15 @@ pipeline {
             sh 'newman run Todo.postman_collection.json'
       }
     }
+    stage('Performance Test') {
+        steps {
+          // Start app in background
+          sh 'nohup node src/app.js >/tmp/app.log 2>&1 & sleep 2'
+
+          // Run K6 performance test
+          sh 'k6 run performance-test.js'
+        }
+      }
+    //Low code
   }
 }
