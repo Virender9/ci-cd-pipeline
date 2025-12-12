@@ -46,13 +46,13 @@ pipeline {
           steps {
             sh '''
               sudo docker run --rm \
-                -e SONAR_HOST_URL=http://3.239.59.204:9000 \
-                -e SONAR_TOKEN=$SONAR_TOKEN \
                 -v $(pwd):/usr/src \
                 sonarsource/sonar-scanner-cli \
                 sonar-scanner \
                   -Dsonar.projectKey=ci-cd-pipeline \
-                  -Dsonar.sources=/usr/src/src
+                  -Dsonar.sources=/usr/src/src \
+                  -Dsonar.host.url=http://<EC2-Public-IP>:9000 \
+                  -Dsonar.login=$SONAR_TOKEN
             '''
           }
         }
