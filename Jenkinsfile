@@ -58,19 +58,22 @@ pipeline {
         }
 
         stage('Deploy to Staging') {
-            steps {
-              sh '''
-                # Stop old container if running
-                docker rm -f staging-app || true
+          steps {
+            sh '''
+              # Stop old container if running
+              docker rm -f staging-app || true
 
-                # Build new image
-                docker build -t staging-app .
+              # Kill any process using port 3000
+              fuser -k 3000/tcp || true
 
-                # Run container on port 3000
-                docker run -d --name staging-app -p 3000:3000 staging-app
-              '''
-            }
+              # Build new image
+              docker build -t staging-app .
+
+              # Run container on port 3000
+              docker run -d --name staging-app -p 3000:3000 staging-app
+            '''
           }
+        }
     //Low code
   }
 }
