@@ -45,7 +45,7 @@ pipeline {
           }
           steps {
             sh '''
-              docker run --rm \
+              sudo docker run --rm \
                 -e SONAR_HOST_URL=http://3.239.59.204:9000 \
                 -e SONAR_TOKEN=$SONAR_TOKEN \
                 -v $(pwd):/usr/src \
@@ -56,6 +56,21 @@ pipeline {
             '''
           }
         }
+
+        stage('Deploy to Staging') {
+            steps {
+              sh '''
+                # Stop old container if running
+                docker rm -f staging-app || true
+
+                # Build new image
+                docker build -t staging-app .
+
+                # Run container on port 3000
+                docker run -d --name staging-app -p 3000:3000 staging-app
+              '''
+            }
+          }
     //Low code
   }
 }
