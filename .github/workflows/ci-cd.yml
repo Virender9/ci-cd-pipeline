@@ -2,8 +2,9 @@ name: CI-CD Pipeline
 
 on:
   push:
+    branches: [ "master" ]  # Change to "main" if you rename your branch
+  pull_request:
     branches: [ "master" ]
-
 
 jobs:
   build-and-test:
@@ -31,6 +32,16 @@ jobs:
         run: |
           nohup node src/app.js >/tmp/app.log 2>&1 & sleep 2
           newman run Todo.postman_collection.json
+
+      # Install K6 for performance testing
+      - name: Install K6
+        run: |
+          sudo apt update
+          sudo apt install -y gnupg software-properties-common
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 33CDB1E4EDC7F7D5
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt update
+          sudo apt install -y k6
 
       # Performance Test
       - name: Performance Test
