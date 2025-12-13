@@ -45,14 +45,11 @@ pipeline {
           }
           steps {
            sh '''
-                docker run --rm \
-                  -v $(pwd):/usr/src \
-                  sonarsource/sonar-scanner-cli \
-                  sonar-scanner \
-                    -Dsonar.projectKey=ci-cd-pipeline \
-                    -Dsonar.sources=/usr/src/src \
-                    -Dsonar.host.url=http://3.239.59.204:9000 \
-                    -Dsonar.login=$SONAR_TOKEN
+                sonar-scanner \
+                  -Dsonar.projectKey=ci-cd-pipeline \
+                  -Dsonar.sources=./src \
+                  -Dsonar.host.url=http://3.239.59.204:9000 \
+                  -Dsonar.login=$SONAR_TOKEN
               '''
           }
         }
