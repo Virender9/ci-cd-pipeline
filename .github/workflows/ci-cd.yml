@@ -1,0 +1,60 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout source code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Install dependencies
+      - name: Install
+        run: npm ci
+
+      # Build project
+      - name: Build
+        run: npm run build
+
+      # Run unit tests
+      - name: Test
+        run: npm test
+
+      # Integration Test
+      - name: Integration Test
+        run: |
+          nohup node src/app.js >/tmp/app.log 2>&1 & sleep 2
+          newman run Todo.postman_collection.json
+
+      # Performance Test
+      - name: Performance Test
+        run: k6 run performance-test.js
+
+      # Security Test - SonarQube
+      - name: Security Test - SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/usr/src \
+            sonarsource/sonar-scanner-cli \
+            sonar-scanner \
+              -Dsonar.projectKey=ci-cd-pipeline \
+              -Dsonar.sources=/usr/src/src \
+              -Dsonar.host.url=http://3.239.59.204:9000 \
+              -Dsonar.login=$SONAR_TOKEN
+
+      # Deploy to Staging
+      - name: Deploy to Staging
+        run: |
+          docker rm -f staging-app || true
+          fuser -k 3000/tcp || true
+          docker build -t staging-app .
+          docker run -d --name staging-app -p 3000:3000 staging-app
