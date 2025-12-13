@@ -40,19 +40,22 @@ pipeline {
         }
       }
       stage('Security Test - SonarQube') {
-          environment {
-            SONAR_TOKEN = credentials('SONAR_TOKEN')
-          }
-          steps {
-           sh '''
-                sonar-scanner \
-                  -Dsonar.projectKey=ci-cd-pipeline \
-                  -Dsonar.sources=./src \
-                  -Dsonar.host.url=http://3.239.59.204:9000 \
-                  -Dsonar.login=$SONAR_TOKEN
+            environment {
+              SONAR_TOKEN = credentials('SONAR_TOKEN')
+            }
+            steps {
+              sh '''
+                docker run --rm \
+                  -v $(pwd):/usr/src \
+                  sonarsource/sonar-scanner-cli \
+                  sonar-scanner \
+                    -Dsonar.projectKey=ci-cd-pipeline \
+                    -Dsonar.sources=/usr/src/src \
+                    -Dsonar.host.url=http://3.239.59.204:9000 \
+                    -Dsonar.login=$SONAR_TOKEN
               '''
+            }
           }
-        }
 
         stage('Deploy to Staging') {
           steps {
